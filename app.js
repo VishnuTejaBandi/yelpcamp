@@ -56,6 +56,6 @@ app.use(indexRoutes);
 
 // ***********************************************************************
 
-app.listen(80, "localhost", function() {
+app.listen(3000||80, "localhost", function() {
     console.log("The server has started")
 });

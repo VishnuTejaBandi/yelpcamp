@@ -6,33 +6,63 @@ var isLoggedIn = require("../middleware").isLoggedIn;
 
 
 
-
+var searchedCamps;
 router.get("/campgrounds", function(req, res) {
-    Campground.find({}, function(err, allCamps) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.render("camps/index", { camps: allCamps });
-        }
-    })
+    console.log(searchedCamps);
+    if(!searchedCamps)
+    {
+        Campground.find({}, function(err, allCamps) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.render("camps/index", { camps: allCamps });
+            }
+        });
+    }
+    else
+    {
+        res.render("camps/index", { camps: searchedCamps });
+        foundCamps=null;
+    }
 
 });
 
 router.post('/campgrounds', isLoggedIn, (req, res) => {
-    var name = req.body.name;
-    var image = req.body.image;
-    var description = req.body.description;
-    Campground.create({ name: name, image: image, description: description, author: { id: req.user._id, username: req.user.username } },
-        function(err, campground) {
+    console.log(req.body);
+
+    if(req.body.search==0) res.redirect("/campgrounds");
+    else if(!req.body.search)
+    {
+        var name = req.body.name;
+        var image = req.body.image;
+        var description = req.body.description;
+        var location = req.body.location;
+        Campground.create({ name: name, image: image, description: description,location:location, author: { id: req.user._id, username: req.user.username } },
+            function(err, campground) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("New Camp created");
+                    req.flash("info", "Successfully created the campground " + campground.name)
+                    res.redirect('/campgrounds');
+                }
+            }
+        )
+    }
+    else
+    {
+        var searchQuery = req.body.search;
+        var mongoQuery = {$or:[{"location":searchQuery },{"name":searchQuery},{"description":searchQuery}]};
+        console.log(mongoQuery);
+        Campground.find(mongoQuery,function(err, foundCamps) {
             if (err) {
                 console.log(err);
             } else {
-                console.log("New Camp created");
-                req.flash("info", "Successfully created the campground " + campground.name)
-                res.redirect('/campgrounds');
+                searchedCamps = foundCamps;
+                res.redirect("/campgrounds");
             }
-        }
-    )
+        }); 
+    }
 
 });
 router.get('/campgrounds/new', isLoggedIn, (req, res) => {
