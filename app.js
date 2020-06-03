@@ -5,8 +5,11 @@ var express = require("express"),
     passport = require("passport"),
     LocalStrategy = require("passport-local"),
     User = require("./models/user"),
-    seedDb = require("./seeds");
+    methodOverride = require("method-override"),
+    seedDb = require("./seeds"),
+    flash = require("connect-flash");
 // Passport Configuration
+
 
 app.use(require("express-session")({
     secret: "Vishnu Teja bandi",
@@ -16,7 +19,8 @@ app.use(require("express-session")({
 
 app.set("view engine", "ejs");
 app.use(bp.urlencoded({ extended: true }));
-
+app.use(methodOverride("_method"));
+app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -31,16 +35,17 @@ var campRoutes = require("./routes/camps"),
 
 mongoose.connect("mongodb://localhost/yelp_camp", {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 });
 
 // seedDb();
 
-
-
 app.use(function(req, res, next) {
     res.locals.currentUser = req.user;
-
+    res.locals.error = req.flash("error");
+    res.locals.success = req.flash("success");
+    res.locals.info = req.flash("info");
     next();
 });
 
@@ -51,6 +56,6 @@ app.use(indexRoutes);
 
 // ***********************************************************************
 
-app.listen(80, "192.168.43.153", function() {
+app.listen(80, "localhost", function() {
     console.log("The server has started")
 });
