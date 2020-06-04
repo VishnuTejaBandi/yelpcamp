@@ -15,15 +15,24 @@ var options = {
 var geocoder = NodeGeocoder(options);
 
 
-
+var searchedCamps;
 router.get("/Hotels", function(req, res) {
-    Hotel.find({}, function(err, allCamps) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.render("camps/index", { camps: allCamps });
-        }
-    })
+    if(!searchedCamps)
+    {
+        Hotel.find({}, function(err, allCamps) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.render("camps/index", { camps: allCamps });
+            }
+        });
+    }
+    else
+    {
+        res.render("camps/index", { camps: searchedCamps });
+        searchedCamps=null;
+    
+    }
 
 });
 
@@ -31,17 +40,40 @@ router.post('/Hotels', isLoggedIn, (req, res) => {
     var name = req.body.name;
     var image = req.body.image;
     var description = req.body.description;
-    Hotel.create({ name: name, image: image, description: description, author: { id: req.user._id, username: req.user.username }, location: req.body.location },
-        function(err, Hotel) {
-            if (err) {
+    
+    if(req.body.search==0) res.redirect("/Hotels");
+    else if(!req.body.search)
+    {
+        var name = req.body.name;
+        var image = req.body.image;
+        var description = req.body.description;
+        var location = req.body.location;
+        Hotel.create({ name: name, image: image, description: description,location:location, author: { id: req.user._id, username: req.user.username }},
+            function(err, Hotel) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("New Camp created");
+                    req.flash("info", "Successfully created the Hotel " + Hotel.name)
+                    res.redirect('/Hotels');
+                }
+            }
+        )
+    }
+    else
+    {
+        var searchQuery = req.body.search;
+        var mongoQuery = {$or:[{"location":searchQuery },{"name":searchQuery},{"description":searchQuery}]};
+        console.log(mongoQuery);
+        Hotel.find(mongoQuery,function(err, foundCamps) {
+            if (err) {  
                 console.log(err);
             } else {
-                console.log("New Camp created");
-                req.flash("info", "Successfully created the Hotel " + Hotel.name)
-                res.redirect('/Hotels');
+                searchedCamps = foundCamps;
+                res.redirect("/Hotels");
             }
-        }
-    )
+        }); 
+    }
 
 });
 //CREATE - add new Hotel to DB
@@ -68,7 +100,7 @@ router.post("/", isLoggedIn, function(req, res) {
             if (err) {
                 console.log(err);
             } else {
-                //redirect back to Hotels page
+                  //redirect back to Hotels page
                 console.log(newlyCreated);
                 res.redirect("/Hotels");
             }
