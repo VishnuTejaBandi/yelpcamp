@@ -1,10 +1,10 @@
 var middlewareObj = {};
 var Comment = require("../models/comment");
-var Campground = require("../models/camp");
+var Hotel = require("../models/camp");
 middlewareObj.checkCampOwnership = function(req, res, next) {
     if (req.isAuthenticated()) {
 
-        Campground.findById(req.params.id, function(err, foundCamp) {
+        Hotel.findById(req.params.id, function(err, foundCamp) {
             if (err) {
                 req.flash("error", "Camp not found");
                 console.log(err);

@@ -1,14 +1,14 @@
 var express = require("express");
 var router = express.Router();
-var Campground = require("../models/camp");
+var Hotel = require("../models/camp");
 var Comment = require("../models/comment");
 var checkCommentOwnership = require("../middleware").checkCommentOwnership;
 var isLoggedIn = require("../middleware").isLoggedIn;
 
 
 
-router.get('/campgrounds/:id/comments/new', isLoggedIn, (req, res) => {
-    Campground.findById(req.params.id, function(err, foundCamp) {
+router.get('/Hotels/:id/comments/new', isLoggedIn, (req, res) => {
+    Hotel.findById(req.params.id, function(err, foundCamp) {
         if (err) {
             console.log(err);
         } else {
@@ -19,10 +19,10 @@ router.get('/campgrounds/:id/comments/new', isLoggedIn, (req, res) => {
 
 });
 
-router.post('/campgrounds/:id/comments', isLoggedIn, (req, res) => {
+router.post('/Hotels/:id/comments', isLoggedIn, (req, res) => {
     var comment = req.body.comment;
     var author = req.user;
-    Campground.findById(req.params.id, function(err, campground) {
+    Hotel.findById(req.params.id, function(err, Hotel) {
         if (err) {
             console.log(err);
         } else {
@@ -36,20 +36,20 @@ router.post('/campgrounds/:id/comments', isLoggedIn, (req, res) => {
                     comment.author.id = req.user._id;
                     comment.author.username = req.user.username;
                     comment.save();
-                    campground.comments.push(comment);
-                    campground.save();
+                    Hotel.comments.push(comment);
+                    Hotel.save();
                     console.log("Created new comment");
                 }
-                req.flash("info", "You have added your comment to " + campground.name + ".")
-                res.redirect('/campgrounds/' + req.params.id);
+                req.flash("info", "You have added your comment to " + Hotel.name + ".")
+                res.redirect('/Hotels/' + req.params.id);
             });
 
         }
     });
 
 });
-router.get('/campgrounds/:id/comments/:comment_id/edit', checkCommentOwnership, (req, res) => {
-    Campground.findById(req.params.id, function(err, foundCamp) {
+router.get('/Hotels/:id/comments/:comment_id/edit', checkCommentOwnership, (req, res) => {
+    Hotel.findById(req.params.id, function(err, foundCamp) {
         if (err) {
             console.log(err);
         } else {
@@ -63,25 +63,25 @@ router.get('/campgrounds/:id/comments/:comment_id/edit', checkCommentOwnership, 
     });
 
 });
-router.put('/campgrounds/:id/comments/:comment_id/', checkCommentOwnership, (req, res) => {
+router.put('/Hotels/:id/comments/:comment_id/', checkCommentOwnership, (req, res) => {
     Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment) {
         if (err) {
 
         } else {
             req.flash("info", "You have updated your comment.")
-            res.redirect('/campgrounds/' + req.params.id);
+            res.redirect('/Hotels/' + req.params.id);
         }
     });
 });
 
-router.delete('/campgrounds/:id/comments/:comment_id/', checkCommentOwnership, (req, res) => {
+router.delete('/Hotels/:id/comments/:comment_id/', checkCommentOwnership, (req, res) => {
     Comment.findByIdAndDelete(req.params.comment_id, req.body.comment, function(err, deletedComment) {
         if (err) {
 
         } else {
-            Campground.findById(req.params.id)
+            Hotel.findById(req.params.id)
             req.flash("info", "You have removed your comment.")
-            res.redirect('/campgrounds/' + req.params.id);
+            res.redirect('/Hotels/' + req.params.id);
         }
     });
 });

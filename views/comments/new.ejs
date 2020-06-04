@@ -7,7 +7,7 @@
                 <%= camp.name %>
             </h1>
             <div style="width:30%; margin:30px auto;">
-                <form action="/campgrounds/<%= camp._id %>/comments" method="POST">
+                <form action="/Hotels/<%= camp._id %>/comments" method="POST">
                     <div class="form-group">
                         <input class="form-control" type="text" name="comment" placeholder="Comment">
                     </div>
@@ -16,7 +16,7 @@
                         <button class="btn btn-block btn-lg btn-primary" type="submit">Submit! </button>
                     </div>
                 </form>
-                <a href="/campgrounds">Go Back</a>
+                <a href="/Hotels">Go Back</a>
             </div>
         </div>
     </div>

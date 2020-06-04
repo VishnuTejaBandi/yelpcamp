@@ -21,7 +21,9 @@
                                 <%= camp.name %>
                             </a>
                         </h4>
-
+                        <p>
+                            <%= camp.location %>
+                        </p>
                         <p>
                             <%= camp.description %>
                         </p>
@@ -30,8 +32,8 @@
 
                             <span class="pull-right">
                             <% if (currentUser && camp.author.id.equals(currentUser.id)) { %>
-                                <a href="/campgrounds/<%= camp._id %>/edit" class="btn btn-xs btn-warning"> Edit</a>
-                                <form style="display: inline;" action="/campgrounds/<%= camp._id %>?_method=DELETE" method="POST">
+                                <a href="/Hotels/<%= camp._id %>/edit" class="btn btn-xs btn-warning"> Edit</a>
+                                <form style="display: inline;" action="/Hotels/<%= camp._id %>?_method=DELETE" method="POST">
                                     <button type="submit" class="btn btn-danger btn-xs">Delete</button>
                                 </form>
 
@@ -44,7 +46,7 @@
                 </div>
                 <div class="well">
                     <div class="text-right">
-                        <a class="btn btn-success" href="/campgrounds/<%= camp._id %>/comments/new ">Add a new comment</a>
+                        <a class="btn btn-success" href="/Hotels/<%= camp._id %>/comments/new ">Add a new comment</a>
                     </div>
                     <hr>
                     <% camp.comments.forEach(function(comment){ %>
@@ -58,8 +60,8 @@
 
                                         <span class="pull-right">
                                     <% if (currentUser && comment.author.id.equals(currentUser.id)) { %>
-                                        <a href="/campgrounds/<%= camp._id %>/comments/<%= comment.id %>/edit" class="btn btn-xs btn-warning">Edit</a>
-                                        <form style="display: inline;" action="/campgrounds/<%= camp._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST">
+                                        <a href="/Hotels/<%= camp._id %>/comments/<%= comment.id %>/edit" class="btn btn-xs btn-warning">Edit</a>
+                                        <form style="display: inline;" action="/Hotels/<%= camp._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST">
                                             <button type="submit" class="btn btn-danger btn-xs">Delete</button>
                                             <% } %>
                                         </span>

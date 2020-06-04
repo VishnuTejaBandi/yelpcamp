@@ -9,6 +9,7 @@ var express = require("express"),
     seedDb = require("./seeds"),
     flash = require("connect-flash");
 // Passport Configuration
+app.use(express.static(__dirname + "/public"));
 
 
 app.use(require("express-session")({
@@ -33,7 +34,7 @@ var campRoutes = require("./routes/camps"),
     indexRoutes = require("./routes/index");
 
 
-mongoose.connect("mongodb://localhost/yelp_camp", {
+mongoose.connect("mongodb://localhost/hotel_go", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false

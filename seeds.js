@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-var Campground = require("./models/camp");
+var Hotel = require("./models/camp");
 var Comment = require("./models/comment");
 var User = require("./models/user");
 var data = [{
@@ -20,12 +20,12 @@ var data = [{
 ]
 
 function seedDB() {
-    //Remove all campgrounds
-    Campground.remove({}, function(err) {
+    //Remove all Hotels
+    Hotel.remove({}, function(err) {
         if (err) {
             console.log(err);
         }
-        console.log("removed campgrounds!");
+        console.log("removed Hotels!");
         User.remove({}, function(err) {
             if (err) {
                 console.log(err);
@@ -37,13 +37,13 @@ function seedDB() {
                 console.log(err);
             }
             console.log("removed comments!");
-            //add a few campgrounds
+            //add a few Hotels
             data.forEach(function(seed) {
-                Campground.create(seed, function(err, campground) {
+                Hotel.create(seed, function(err, Hotel) {
                     if (err) {
                         console.log(err)
                     } else {
-                        console.log("added a campground");
+                        console.log("added a Hotel");
                         // create a comment
                         Comment.create({
                             text: "This place is great, but I wish there was internet",
@@ -52,8 +52,8 @@ function seedDB() {
                             if (err) {
                                 console.log(err);
                             } else {
-                                campground.comments.push(comment);
-                                campground.save();
+                                Hotel.comments.push(comment);
+                                Hotel.save();
                                 console.log("Created new comment");
                             }
                         });
